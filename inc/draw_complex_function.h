@@ -35,6 +35,28 @@ static const std::function<float(std::complex<float>)> DEFAULT_HEIGHT =
     return std::abs(z);
 };
 
+struct draw_complex_function_f {
+    std::function<std::complex<float>(std::complex<float>)> func;
+    const Bound &input_bounds;
+    unsigned char DRAW_SETTINGS;
+    decltype(DEFAULT_COLOR) &color_func;
+    decltype(DEFAULT_HEIGHT) &height_func;
+    float eps;
+
+    draw_complex_func_f(
+        std::function<std::complex<float>(std::complex<float>)> func,
+        const Bound &input_bounds,
+        unsigned char DRAW_SETTINGS = DEFAULT_DRAW_SETTINGS,
+        decltype(DEFAULT_COLOR) &color_func = DEFAULT_COLOR,
+        decltype(DEFAULT_HEIGHT) &height_func = DEFAULT_HEIGHT,
+        const float &eps = DEFAULT_EPSILON
+    ):  func{func}, 
+        input_bounds{input_bounds}, 
+        DRAW_SETTINGS{DRAW_SETTINGS}, 
+        colour_func{colour_func}, 
+        height_func{height_func}, 
+        eps{eps} {}
+};
 
 void draw_complex_function(
     std::function<std::complex<float>(std::complex<float>)> func,
