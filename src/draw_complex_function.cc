@@ -3,15 +3,7 @@
 
 // todo: factor into input structure
 
-void draw_complex_function(
-    std::function<std::complex<float>(std::complex<float>)> func,
-    const Bound &input_bounds,
-    unsigned char DRAW_SETTINGS,
-    decltype(DEFAULT_COLOR) &color_func,
-    decltype(DEFAULT_HEIGHT) &height_func,
-    const float &eps,
-    [[maybe_unused]] bool dummy
-) {
+void draw_complex_function::draw() {
     using namespace std::complex_literals;
     for(float x {std::get<0>(input_bounds)}; x < std::get<1>(input_bounds); x += eps) {
         for(float y{std::get<0>(input_bounds)}; y < std::get<1>(input_bounds); y += eps) {
