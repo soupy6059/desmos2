@@ -1,6 +1,8 @@
 #include "draw_complex_function.h"
 #include "craylib.h"
 
+// todo: factor into input structure
+
 void draw_complex_function(
     std::function<std::complex<float>(std::complex<float>)> func,
     const Bound &input_bounds,
