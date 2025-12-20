@@ -109,33 +109,33 @@ void dcf::draw_complex_function(C_to_C func, settings setting) {
 }
 
 void dcf::draw_complex_function(C_to_C2 func, settings setting) {
-    using namespace std::complex_literals;
-    for(R x {std::get<0>(setting.input_bounds)}; x < std::get<1>(setting.input_bounds); x += setting.epsilon) {
-        for(R y{std::get<0>(setting.input_bounds)}; y < std::get<1>(setting.input_bounds); y += setting.epsilon) {
-            constexpr static const std::size_t scn = 4; // square corner number
-            std::array<C2,scn> z2s;
-            std::array<rl::Vector3,scn> triangle_corners; 
-            rl::Color triangle_colors = rl::RED;
-            
-            compute_func(func, x, y, z2s, setting);
-            compute_triangle_corners(x, y, z2s, triangle_corners, setting);
-            triangle_colors = setting.color(z2s[0].second);
+using namespace std::complex_literals;
+for(R x {std::get<0>(setting.input_bounds)}; x < std::get<1>(setting.input_bounds); x += setting.epsilon) {
+for(R y{std::get<0>(setting.input_bounds)}; y < std::get<1>(setting.input_bounds); y += setting.epsilon) {
+    constexpr static const std::size_t scn = 4; // square corner number
+    std::array<C2,scn> z2s;
+    std::array<rl::Vector3,scn> triangle_corners; 
+    rl::Color triangle_colors = rl::RED;
+    
+    compute_func(func, x, y, z2s, setting);
+    compute_triangle_corners(x, y, z2s, triangle_corners, setting);
+    triangle_colors = setting.color(z2s[0].second);
 
-            if(setting.lighting == settings::LIGHTING::ON) compute_lighting(triangle_corners, triangle_colors, setting);
-            
-            rl::DrawTriangle3D(
-                triangle_corners[0],
-                triangle_corners[1],
-                triangle_corners[2],
-                triangle_colors
-            );
-            rl::DrawTriangle3D(
-                triangle_corners[3],
-                triangle_corners[2],
-                triangle_corners[1],
-                triangle_colors
-            );
-        }
-    }
+    if(setting.lighting == settings::LIGHTING::ON) compute_lighting(triangle_corners, triangle_colors, setting);
+    
+    rl::DrawTriangle3D(
+        triangle_corners[0],
+        triangle_corners[1],
+        triangle_corners[2],
+        triangle_colors
+    );
+    rl::DrawTriangle3D(
+        triangle_corners[3],
+        triangle_corners[2],
+        triangle_corners[1],
+        triangle_colors
+    );
+}
+}
 }
 
