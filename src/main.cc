@@ -26,19 +26,25 @@ int main() {
         .projection = rl::CAMERA_PERSPECTIVE,
     };
     float t = 1.f;
+    float t2 = 1.f;
     float eps = 0.1f;
     rl::Vector2 cord = {0.f,0.f};
+    float bound_radius = 5.f;
 
     rl::DisableCursor();
     rl::SetTargetFPS(60);
 
     while (!rl::WindowShouldClose()) {
         rl::UpdateCamera(&camera, rl::CAMERA_FREE);
-        if (rl::IsKeyPressed(rl::KEY_Z)) camera.target = { 0.0f, 0.0f, 0.0f };
+        if(rl::IsKeyPressed(rl::KEY_Z)) camera.target = { 0.0f, 0.0f, 0.0f };
 
-        // time parameter controls
+        // time1 parameter controls
         if(rl::IsKeyDown(rl::KEY_F)) t += rl::GetFrameTime() * 0.1f;
         if(rl::IsKeyDown(rl::KEY_G)) t -= rl::GetFrameTime() * 0.1f;
+
+        // time2 param controls
+        if(rl::IsKeyDown(rl::KEY_R)) t2 += rl::GetFrameTime() * 0.1f;
+        if(rl::IsKeyDown(rl::KEY_T)) t2 -= rl::GetFrameTime() * 0.1f;
 
         // cord controls
         const float speed = 0.5f;
@@ -52,13 +58,17 @@ int main() {
         if(rl::IsKeyDown(rl::KEY_C)) eps -= rl::GetFrameTime() * .1f;
         eps = std::max(0.005f,eps);
 
+        // bound controls
+        if(rl::IsKeyDown(rl::KEY_V)) bound_radius += rl::GetFrameTime() * .1f;
+        if(rl::IsKeyDown(rl::KEY_B)) bound_radius -= rl::GetFrameTime() * .1f;
+
         rl::BeginDrawing();
             rl::ClearBackground(rl::RAYWHITE);
 
             rl::BeginMode3D(camera);
                 //test.identity().draw();
                 rl::DrawSphere(rl::Vector3{1.f,0.f,0.f}, .1f, rl::RED);
-                event_loop(t,cord,eps);
+                event_loop(t,t2,cord,eps,bound_radius);
             rl::EndMode3D();
 
             // debug info

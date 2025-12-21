@@ -5,7 +5,7 @@
 #include <complex>
 #include <map>
 
-void event_loop(float t, rl::Vector2 cord, float eps) {
+void event_loop(float t, float t2, rl::Vector2 cord, float eps, float bound_radius) {
     using namespace std::complex_literals;
     using namespace dcf;
 
@@ -15,13 +15,12 @@ void event_loop(float t, rl::Vector2 cord, float eps) {
     }};
 
     dcf::settings s {defaults::make()};
-    s.input_bounds = Bound{-t,t};
+    s.input_bounds = Bound{-bound_radius,bound_radius};
     s.epsilon = eps;
     static C_to_C2 g {
-
-    [&t,&cord](C z) -> C2 {
+    [&t,&cord,&t2](C z) -> C2 {
         z -= C{cord.x,cord.y};
-        return { z, std::exp(-std::exp(z)) };
+        return { std::pow(z,t2), std::pow(z,t) };
     }};
 
     dcf::draw_complex_function(
