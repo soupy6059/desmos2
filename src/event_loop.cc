@@ -5,17 +5,29 @@
 #include <complex>
 #include <map>
 
-void event_loop(float t) {
-    auto func = draw_complex_function(
-        [&t](std::complex<float> z) -> std::complex<float> {
-            using namespace std::complex_literals;
-            return std::sin(z);
-        },
-        {-10.f,10.f},
-        DEFAULT_DRAW_SETTINGS | LIGHTING_ON,
-        DEFAULT_COLOR,
-        DEFAULT_HEIGHT,
-        0.1f
+void event_loop(float t, float t2, rl::Vector2 cord, float eps, float bound_radius) {
+    using namespace std::complex_literals;
+    using namespace dcf;
+
+    static C_to_C f {
+    [&t](C z) -> C {
+        return std::atan(z);
+    }};
+
+    dcf::settings s {defaults::make()};
+    s.input_bounds = Bound{-bound_radius,bound_radius};
+    s.epsilon = eps;
+    static C_to_C2 g {
+    [&t,&cord,&t2](C z) -> C2 {
+        z -= C{cord.x,cord.y};
+        return { std::pow(z,t2), std::pow(z,t) };
+    }};
+
+    dcf::draw_complex_function(
+        g, s
     );
-    func.draw();
+
+    //dcf::draw_complex_function(
+        //f, defaults::make()
+    //);
 }

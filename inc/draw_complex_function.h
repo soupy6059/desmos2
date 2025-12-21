@@ -8,7 +8,16 @@ typedef __builtin_va_list __gnuc_va_list;
 
 #include "craylib.h"
 
-using Bound = std::pair<float,float>;
+namespace dcf {
+
+using R = float;
+using Bound = std::pair<R,R>;
+using C = std::complex<R>;
+using C2 = std::pair<C,C>;
+using C_to_C = std::function<C(C)>; 
+using C_to_C2 = std::function<C2(C)>;
+using C_to_R = std::function<R(C)>;
+using C_to_Color = std::function<rl::Color(C)>;
 
 // SETTINGS
 constexpr static const unsigned char OUTPUT = 0b00000001;
@@ -35,27 +44,46 @@ static const std::function<float(std::complex<float>)> DEFAULT_HEIGHT =
     return std::abs(z);
 };
 
-struct draw_complex_function {
-    std::function<std::complex<float>(std::complex<float>)> func;
-    const Bound &input_bounds;
-    unsigned char DRAW_SETTINGS;
-    decltype(DEFAULT_COLOR) &color_func;
-    decltype(DEFAULT_HEIGHT) &height_func;
-    float eps;
-
-    draw_complex_function(
-        std::function<std::complex<float>(std::complex<float>)> func,
-        const Bound &input_bounds,
-        unsigned char DRAW_SETTINGS = DEFAULT_DRAW_SETTINGS,
-        decltype(DEFAULT_COLOR) &color_func = DEFAULT_COLOR,
-        decltype(DEFAULT_HEIGHT) &height_func = DEFAULT_HEIGHT,
-        const float &eps = DEFAULT_EPSILON
-    ):  func{func}, 
-        input_bounds{input_bounds}, 
-        DRAW_SETTINGS{DRAW_SETTINGS}, 
-        color_func{color_func}, 
-        height_func{height_func}, 
-        eps{eps} {}
-    void draw();
+static decltype(DEFAULT_HEIGHT) NEGATIVE_DEFAULT_HEIGHT =
+[](std::complex<float> z) -> float {
+    return -DEFAULT_HEIGHT(z);
 };
 
+
+struct settings {
+    enum class LIGHTING {
+        ON, OFF
+    };
+    Bound input_bounds;
+    R epsilon;
+    C_to_R height;
+    C_to_Color color;
+    LIGHTING lighting;
+};
+
+namespace defns {
+    static const C_to_Color phase_to_hue {[](C z) -> rl::Color {
+        return rl::ColorFromHSV(std::arg(z) / std::acos(-1) * 180.f + 180.f, 1.f, 0.75f);
+    }};
+};
+
+namespace defaults {
+    static const settings::LIGHTING lighting = settings::LIGHTING::ON;
+    static const Bound bound {-5.0f,5.0f};
+    static const R epsilon {0.1f};
+    static const C_to_R height = [](C z) -> R { return std::abs(z); };
+    static const C_to_Color color {defns::phase_to_hue};
+    settings make();
+};
+
+void draw_complex_function(
+    C_to_C func,
+    settings setting
+);
+
+void draw_complex_function(
+    C_to_C2 func,
+    settings setting
+);
+
+};
