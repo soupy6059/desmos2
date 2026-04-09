@@ -56,7 +56,7 @@ int main() {
         // eps controls
         if(rl::IsKeyDown(rl::KEY_X)) eps += rl::GetFrameTime() * .1f;
         if(rl::IsKeyDown(rl::KEY_C)) eps -= rl::GetFrameTime() * .1f;
-        eps = std::max(0.005f,eps);
+        eps = std::max(0.05f,eps);
 
         // bound controls
         if(rl::IsKeyDown(rl::KEY_V)) bound_radius += rl::GetFrameTime() * .1f;
